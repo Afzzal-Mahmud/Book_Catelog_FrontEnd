@@ -1,14 +1,10 @@
-import Navbar from "./components/Navbar"
-import Books from "./pages/Books"
-import Hero from "./pages/Hero"
+import MainLayout from "./Layout/MainLayout"
 
 function App() {
 
   return (
     <>
-        <Navbar/>
-        <Hero/>
-        <Books/>
+        <MainLayout/>
     </>
   )
 }
