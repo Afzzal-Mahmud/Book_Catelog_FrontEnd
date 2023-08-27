@@ -51,7 +51,7 @@ function Register() {
         </div>
 
         <div className="mt-6">
-          <button className="w-full px-6 py-2.5 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
+          <button className="w-full px-6 py-2.5 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-orange-800 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
             Register Account
           </button>
         </div>
@@ -73,9 +73,9 @@ function Register() {
       <div className="flex items-center mt-6 -mx-2">
         <button
           type="button"
-          className="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none"
+          className="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-gray-700 rounded-lg hover:bg-gray-800 focus:bg-blue-400 focus:outline-none"
         >
-          <span className="hidden mx-2 sm:inline">Sign in with Google</span>
+          <span className="mx-2 sm:inline">Sign in with Google</span>
         </button>
       </div>
     </div>
