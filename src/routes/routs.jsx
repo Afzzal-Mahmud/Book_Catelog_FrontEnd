@@ -5,6 +5,7 @@ import Hero from '../pages/Hero';
 import NotFound from '../components/NotFound';
 import LogIn from '../components/logIn';
 import Register from '../components/Register';
+import WishList from '../pages/WishList/WishList';
 
 
 const routes = createBrowserRouter([
@@ -15,6 +16,10 @@ const routes = createBrowserRouter([
       {
         index: true,
         element: <Hero />,
+      },
+      {
+        path: '/wishlist',
+        element: <WishList/>,
       },
       {
         path: '/login',

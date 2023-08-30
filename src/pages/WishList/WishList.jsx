@@ -1,17 +1,17 @@
-/* eslint-disable react/prop-types */
-import { AiFillDelete } from "react-icons/ai";
+// import { AiFillDelete } from "react-icons/ai";
 import { MdFavorite } from "react-icons/md";
 import { useSelector } from "react-redux";
-function Wishlist() {
-  const { favouriteBooks } = useSelector((state) => state.favouriteBooks);
+import { Link } from "react-router-dom";
 
+function WishlistLink() {
+  const { favouriteBooks } = useSelector((state) => state.favouriteBooks);
   return (
     <section className="bg-white sm:bg-gray-100 md:bg-gray-100 mt-[10%]">
       <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         <div className="mx-auto max-w-3xl bg-white rounded-lg shadow-md p-6">
           <header className="text-center mb-8">
             <h1 className="text-xl font-bold text-gray-900 sm:text-3xl">
-              Your Wishlist
+              Your WishlistLink
             </h1>
             <MdFavorite className="text-center" size={25} />
             <p className="text-xl mt-2 dark:text-gray-800">
@@ -56,9 +56,15 @@ function Wishlist() {
                         </dl>
                       </div>
 
-                      <button className="text-red-600 transition hover:text-red-800 mt-4 sm:mt-0">
+                      {/* Due to react mount and unmount problem, Currently skipping the delete option */}
+
+                      {/* <button onClick={dispatch(deleteFavouriteBook(singleBook._id))} className="text-red-600 transition hover:text-red-800 mt-4 sm:mt-0">
                         <AiFillDelete size={25} />
-                      </button>
+                      </button> */}
+
+                      <Link to={`/book-details/${singleBook._id}`}>
+                        <h2 style={{textDecoration:"underline"}} className="text-xl mt-3 sm:mt-1">Make Review</h2>
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -71,4 +77,4 @@ function Wishlist() {
   );
 }
 
-export default Wishlist;
+export default WishlistLink;

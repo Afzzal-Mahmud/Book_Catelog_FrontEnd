@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Wishlist from "./Wishlist";
+import WishlistLink from "./WishList/WishlistLink";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBooks, setSelectedGenre } from "../Redux/book/bookSlice";
 import { STATUSES } from "../Redux/enums/bookApiStatus";
@@ -75,7 +75,7 @@ const Books = () => {
               <BooksBody key={index} singleBook={singleBook} />
             ))}
       </div>
-      <Wishlist />
+      <WishlistLink />
     </div>
   );
 };
