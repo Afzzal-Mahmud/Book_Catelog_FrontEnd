@@ -44,10 +44,10 @@ export function fetchBooks() {
       const res = await fetch("https://book-catalouge.vercel.app/api/v1/books");
       const data = await res.json();
       dispatch(setBooks(data.data));
-      setStatus(STATUSES.IDLE);
+      dispatch(setStatus(STATUSES.IDLE))
     } catch (error) {
       console.log(error);
-      setStatus(STATUSES.ERROR);
+      dispatch(setStatus(STATUSES.ERROR));
     }
   };
 }
