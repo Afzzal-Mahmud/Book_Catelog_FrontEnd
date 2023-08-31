@@ -5,8 +5,15 @@ export const bookDetailsApi = createApi({
     endpoints : (builder) => ({
         getBookDetails : builder.query({
             query : (_id) => `/books/${_id}`
+        }),
+        postBookReview : builder.mutation({
+            query: ({id,data}) => ({
+                url: `/books/${id}`,
+                method: 'POST',
+                body: data
+              })
         })
     })
 })
 
-export const { useGetBookDetailsQuery } = bookDetailsApi
+export const { useGetBookDetailsQuery, usePostBookReviewMutation } = bookDetailsApi

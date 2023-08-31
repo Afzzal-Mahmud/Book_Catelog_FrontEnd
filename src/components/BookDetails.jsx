@@ -42,8 +42,8 @@ function BookDetails() {
           </div>
         </div>
       </div>
-      <Review />
-      <ReviewForm />
+      <Review idOfBook ={bookId} />
+      <ReviewForm idOfBook={bookId}/>
     </>
   );
 }

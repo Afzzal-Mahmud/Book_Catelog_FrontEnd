@@ -1,9 +1,20 @@
+/* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
-function ReviewForm() {
+import { usePostBookReviewMutation } from "../Redux/book/bookDetailsSlice";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+function ReviewForm({idOfBook}) {
+  const {reset} = useForm()
+  const {user} = useSelector((state) => state.user)
+  const [postBookReview] = usePostBookReviewMutation()
   const { handleSubmit, register } = useForm();
-  const handleReview = (data) => {
-    // the backend only want data.review no email
-    console.log(data);
+  const handleReview = async(data) => {
+    const reviewOptions = {
+      id : idOfBook,
+      data : {review : [data.message]}
+    }
+    await postBookReview(reviewOptions)
+    reset()
   };
   return (
     <section>
@@ -32,8 +43,6 @@ function ReviewForm() {
                       <form
                         onSubmit={handleSubmit(handleReview)}
                         id="feedbackForm"
-                        action=""
-                        method=""
                       >
                         <div className="relative w-full mb-3">
                           <label className="block uppercase text-gray-700 text-xs font-bold mb-2">
@@ -55,24 +64,28 @@ function ReviewForm() {
                             Message
                           </label>
                           <textarea
-                            {...register("review")}
-                            name="feedback"
-                            id="feedback"
+                            {...register("message", {
+                              required: "Minimum 120 carecter of message is required to submit",
+                              minLength: 120,
+                            })}
+                            name="message"
+                            id="message"
                             rows="4"
                             cols="80"
                             className="border-0 px-3 py-3 bg-gray-300 placeholder-black text-gray-800 rounded text-sm shadow focus:outline-none w-full"
-                            placeholder=""
                             required
                           ></textarea>
                         </div>
                         <div className="text-center mt-6">
+                          {user?.email ? 
                           <button
                             id="feedbackBtn"
-                            className="bg-yellow-300 text-black text-center mx-auto active:bg-yellow-400 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                            className="bg-yellow-300 text-black text-center mx-auto active:bg-yellow-400 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1" 
                             type="submit"
                           >
                             Submit
-                          </button>
+                          </button> : <h2 className="text-black">To submit a review make sure you <Link style={{textDecoration:"underline"}} to={'/login'}>logIn</Link> first</h2>
+                          }
                         </div>
                       </form>
                     </div>
