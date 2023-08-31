@@ -1,10 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../Redux/userAuth/userAuthSlice";
 
 function LogIn() {
-  const { handleSubmit, register } = useForm();
+  const { handleSubmit, formState: { errors }, register } = useForm();
+  const dispatch = useDispatch()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const from = location?.state?.from || '/'
   const submitAction = (data) => {
-    console.log(data);
+    try {
+      dispatch(loginUser({ email: data.mail, password: data.password }))
+      navigate(from,{replace : true})
+    } catch (error) {
+      console.log(error)
+    }
   };
   return (
     <div className="w-full max-w-sm p-6 m-auto mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800">
@@ -16,10 +27,12 @@ function LogIn() {
             Email
           </label>
           <input
-            {...register("email")}
+            {...register("mail", { required: "Email Address is required" })} 
+            aria-invalid={errors.mail ? "true" : "false"}
             type="text"
             className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-gray-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           />
+          {errors.mail && <p role="alert">{errors.mail?.message}</p>}
         </div>
 
         <div className="mt-4">
@@ -36,10 +49,11 @@ function LogIn() {
           </div>
 
           <input
-            {...register("password")}
+            {...register("password",{ required: "Your password is required", minLength: 6 })}
             type="password"
             className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-gray-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           />
+          {errors.password && <p role="alert">{errors.password?.message}</p>}
         </div>
 
         <div className="mt-6">

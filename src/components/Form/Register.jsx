@@ -1,9 +1,40 @@
 import { useForm } from "react-hook-form";
+import { createUser } from "../../Redux/userAuth/userAuthSlice";
+import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 function Register() {
-  const { handleSubmit, register } = useForm();
-  const submitAction = (data) => {
-    console.log(data.name);
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+  } = useForm();
+  const { error: firebaseError } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const submitAction = async (data) => {
+    try {
+      if (firebaseError) {
+        await Swal.fire({
+          icon: "error",
+          title: "Oops",
+          text: "This email already in use",
+          footer: "Use another email or log by clicking the login button",
+        });
+        return;
+      }
+      await dispatch(createUser({ email: data.mail, password: data.password }));
+      Swal.fire(
+        "Good job",
+        "Your account has been created successfully",
+        "success"
+      );
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <div className="w-full max-w-sm p-6 m-auto mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800">
       <div className="flex justify-center mx-auto"></div>
@@ -14,7 +45,7 @@ function Register() {
             Name
           </label>
           <input
-            {...register("name")}
+            {...register("name", { required: true })}
             type="text"
             className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           />
@@ -24,10 +55,12 @@ function Register() {
             Email
           </label>
           <input
-            {...register("email")}
+            {...register("mail", { required: "Email Address is required" })}
+            aria-invalid={errors.mail ? "true" : "false"}
             type="text"
             className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           />
+          {errors.mail && <p role="alert">{errors.mail?.message}</p>}
         </div>
 
         <div className="mt-4">
@@ -44,10 +77,14 @@ function Register() {
           </div>
 
           <input
-            {...register("password")}
+            {...register("password", {
+              required: "Minimum 6 digit of password is required",
+              minLength: 6,
+            })}
             type="password"
             className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           />
+          {errors.password && <p role="alert">{errors.password?.message}</p>}
         </div>
 
         <div className="mt-6">
