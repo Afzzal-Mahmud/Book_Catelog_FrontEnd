@@ -6,6 +6,7 @@ import { STATUSES } from "../enums/bookApiStatus";
 const initialState = {
   books: [],
   selectedGenre: [],
+  searchedBasedBooks:[],
   status: STATUSES.IDLE,
 };
 
@@ -20,8 +21,11 @@ export const bookSlice = createSlice({
       state.status = action.payload;
     },
     setSelectedGenre: (state, action) => {
-      /* The action is actually the genre of books */
 
+      if(state.searchedBasedBooks.length){
+        state.searchedBasedBooks = []
+      }
+      /* The action is actually the genre of books */
       if (action.payload) {
         state.selectedGenre = state.books.filter(
           (book) => book?.genre === action?.payload
@@ -31,9 +35,23 @@ export const bookSlice = createSlice({
         state.selectedGenre = state.books;
       }
     },
+    setBooksBasedOnSearch : (state,action) => {
+      // setting the genre state to empty
+      if(state.selectedGenre.length){
+        state.selectedGenre = []
+      }
+
+      if(action.payload){
+        state.searchedBasedBooks = state.books.filter(
+          (book) => book.title?.toLowerCase().includes(action.payload)
+        )
+      } else{
+        state.searchedBasedBooks = state.books
+      }
+    }
   },
 });
-export const { setBooks, setStatus, setSelectedGenre } = bookSlice.actions;
+export const { setBooks, setStatus, setSelectedGenre,setBooksBasedOnSearch} = bookSlice.actions;
 export default bookSlice.reducer;
 
 // Thunks
