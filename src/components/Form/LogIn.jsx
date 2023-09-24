@@ -2,17 +2,22 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../Redux/userAuth/userAuthSlice";
-
+import Swal from "sweetalert2"
 function LogIn() {
   const { handleSubmit, formState: { errors }, register } = useForm();
   const dispatch = useDispatch()
   const location = useLocation()
   const navigate = useNavigate()
   const from = location?.state?.from || '/'
-  const submitAction = (data) => {
+  const submitAction = async(data) => {
     try {
-      dispatch(loginUser({ email: data.mail, password: data.password }))
-      navigate(from,{replace : true})
+      await dispatch(loginUser({ email: data.mail, password: data.password }))
+      await Swal.fire(
+        "Good job",
+        "Your account has been created successfully",
+        "success"
+      );
+      await navigate(from,{replace : true})
     } catch (error) {
       console.log(error)
     }

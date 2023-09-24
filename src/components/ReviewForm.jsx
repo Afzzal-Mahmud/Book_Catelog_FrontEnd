@@ -3,8 +3,9 @@ import { useForm } from "react-hook-form";
 import { usePostBookReviewMutation } from "../Redux/book/bookDetailsSlice";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2"
 function ReviewForm({idOfBook}) {
-  const {reset} = useForm()
+
   const {user} = useSelector((state) => state.user)
   const [postBookReview] = usePostBookReviewMutation()
   const { handleSubmit, register } = useForm();
@@ -14,7 +15,12 @@ function ReviewForm({idOfBook}) {
       data : {review : [data.message]}
     }
     await postBookReview(reviewOptions)
-    reset()
+    await Swal.fire(
+      "Good job",
+      "Your review added successfully",
+      "success"
+    );
+    // await window.location.reload()
   };
   return (
     <section>
