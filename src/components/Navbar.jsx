@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { AiOutlineSearch } from "react-icons/ai";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
-import {setUser} from "../Redux/userAuth/userAuthSlice"
+import { setUser } from "../Redux/userAuth/userAuthSlice"
 import { SwitchTabs } from "./SwitchTabs/SwitchTabs";
 const Navbar = () => {
   const navigateTo = useNavigate();
@@ -39,17 +38,7 @@ const Navbar = () => {
         </Link>
       </div>
 
-      {/* Search Input */}
-      <div className="hidden bg-gray-200 rounded-full md:flex lg:flex items-center px-2 w-[200px] sm:w-[400px] lg:w-[500px]">
-        <AiOutlineSearch size={25} />
-        <input
-          className="bg-transparent p-2 w-full focus:outline-none"
-          type="text"
-          placeholder="Search Books"
-        />
-        {/* Logout Button */}
-        {/* login/register button */}
-      </div>
+      {/* login/register button */}
       {user.email ? (
         <button
           onClick={handleLogout}

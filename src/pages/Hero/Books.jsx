@@ -1,10 +1,13 @@
 import { useEffect } from "react";
-import WishlistLink from "./WishList/WishlistLink";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBooks, setSelectedGenre } from "../Redux/book/bookSlice";
-import { STATUSES } from "../Redux/enums/bookApiStatus";
-import Spinner from "../components/Spinner/Spinner";
-import BooksBody from "../components/BooksBody/BooksBody";
+import { STATUSES } from "../../Redux/enums/bookApiStatus";
+import { fetchBooks, setSelectedGenre } from "../../Redux/book/bookSlice";
+
+import WishlistLink from "../WishList/WishList";
+import Spinner from "../../components/Spinner/Spinner";
+import BooksBody from "../../components/BooksBody/BooksBody";
+import { AiOutlineSearch } from "react-icons/ai";
+
 const Books = () => {
   /* setting the books into store */
   const dispatch = useDispatch();
@@ -62,6 +65,18 @@ const Books = () => {
             </button>
           </div>
         </div>
+        {/* Search Input */}
+
+        <div className="rounded-lg pt-5 pb-3 py-2 mb-4">
+          <div className="flex items-center bg-gray-200 rounded-md">
+            <div className="pl-2">
+              <AiOutlineSearch />
+            </div>
+            <input
+              className="w-full rounded-md bg-gray-200 text-gray-700 leading-tight focus:outline-none py-2 px-2"
+              id="search" type="text" placeholder="Search books" />
+          </div>
+        </div>
       </div>
 
       {/* Display books */}
@@ -69,11 +84,11 @@ const Books = () => {
         {/* mapping the same component based on diffirent state */}
         {selectedGenre.length
           ? selectedGenre.map((singleBook, index) => (
-              <BooksBody key={index} singleBook={singleBook} />
-            ))
+            <BooksBody key={index} singleBook={singleBook} />
+          ))
           : books.map((singleBook, index) => (
-              <BooksBody key={index} singleBook={singleBook} />
-            ))}
+            <BooksBody key={index} singleBook={singleBook} />
+          ))}
       </div>
       <WishlistLink />
     </div>
