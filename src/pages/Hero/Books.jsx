@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { STATUSES } from "../../Redux/enums/bookApiStatus";
 import { fetchBooks, setBooksBasedOnSearch, setSelectedGenre } from "../../Redux/book/bookSlice";
 
-import Wishlist from "../WishList/WishList";
 import Spinner from "../../components/Spinner/Spinner";
 import BooksBody from "../../components/BooksBody/BooksBody";
 import { AiOutlineInfoCircle, AiOutlineSearch } from "react-icons/ai";
@@ -114,7 +113,6 @@ const Books = () => {
         }
 
       </div>
-      <Wishlist/>
     </div>
   );
 };

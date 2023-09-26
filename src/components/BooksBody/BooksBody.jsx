@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { MdFavorite } from "react-icons/md";
+import { BsBookmarkHeartFill } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
@@ -50,7 +50,7 @@ function BooksBody({ singleBook }) {
         <div className="flex justify-between px-2 py-4">
           <p className="font-bold">{singleBook.title}</p>
           <p onClick={() => handleFavouriteBook(singleBook)}>
-            <MdFavorite size={25} />
+            <BsBookmarkHeartFill size={25} />
           </p>
         </div>
       </div>
