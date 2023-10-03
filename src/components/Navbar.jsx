@@ -1,18 +1,34 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAuth, signOut } from "firebase/auth";
-import {BiEdit,BiSolidBookmarkAltPlus} from "react-icons/bi"
-import {AiOutlineMenu,AiOutlineClose,AiFillHeart} from "react-icons/ai"
+import { BiEdit, BiSolidBookmarkAltPlus } from "react-icons/bi"
+import { AiOutlineMenu, AiOutlineClose, AiFillHeart } from "react-icons/ai"
 import { Link } from "react-router-dom";
-import { setUser } from "../Redux/userAuth/userAuthSlice"
 import { SwitchTabs } from "./SwitchTabs/SwitchTabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { setUserStatus } from "../Redux/userAuth/userAuthSlice";
 const Navbar = () => {
-  const navigateTo = useNavigate();
+  const { userStatus } = useSelector((state) => state.user)
+  const navigateTo = useNavigate()
   const dispatch = useDispatch()
-  const [nav,setNav] = useState(false)
-  const auth = getAuth();
-  const { user } = useSelector((state) => state.user);
+  const [nav, setNav] = useState(false)
+
+  useEffect(() => {
+    // Access the 'userState' cookie
+    const userState = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userState='));
+
+    if (userState) {
+      const status = userState.split('=')[1];
+      if (status === '') {
+        dispatch(setUserStatus(false))
+      } else {
+        dispatch(setUserStatus(status))
+      }
+    }
+  }, [dispatch, userStatus]);
+
   const onTabChange = (tab) => {
     if (tab === "login") {
       navigateTo("/login");
@@ -20,26 +36,24 @@ const Navbar = () => {
       navigateTo("/register");
     }
   };
-  const onNavigateTo = async(navigationLink) => {
-   await navigateTo(`/${navigationLink}`)
-   await setNav(!nav)
+
+  const onNavigateTo = async (navigationLink) => {
+    await navigateTo(`/${navigationLink}`)
+    await setNav(!nav)
   }
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        dispatch(setUser(null))
-        // Sign-out successful.
-      })
-      .catch((error) => {
-        // An error happened.
-        console.log(error);
-      });
+  const handleLogout = async () => {
+    const response = await axios.post('http://localhost:5000/api/v1/auth/logout', {}, { withCredentials: true });
+
+    if (response.data?.statusCode === 200) {
+      await dispatch(setUserStatus(false))
+      navigateTo('/login')
+    }
   };
   return (
     <div className="max-w-[1640px] mx-auto flex justify-between items-center p-4">
       {/* Left side */}
       <div className="flex items-center">
-      <div onClick={()=> setNav(!nav)} className='cursor-pointer md:hidden'>
+        <div onClick={() => setNav(!nav)} className='cursor-pointer md:hidden'>
           <AiOutlineMenu size={30} />
         </div>
         <Link to={"/"}>
@@ -48,21 +62,21 @@ const Navbar = () => {
           </h1>
         </Link>
         <div className='hidden md:flex items-centers p-1 text-[16px]'>
-          <Link to={'/wishlist'} className='pt-[12px] px-3 font-bold flex'><AiFillHeart size={25} className="mr-2"/>Wishlist</Link>
-          <Link to={'/addbook'} className='pt-[12px] px-3 font-bold flex'><BiSolidBookmarkAltPlus size={25} className="mr-2"/>Add New Book</Link>
-          <Link to={'/editbook'} className='pt-[12px] px-3 font-bold flex'><BiEdit size={25} className="mr-3"/>Edit Book</Link>
+          <Link to={'/wishlist'} className='pt-[12px] px-3 font-bold flex'><AiFillHeart size={25} className="mr-2" />Wishlist</Link>
+          <Link to={'/addbook'} className='pt-[12px] px-3 font-bold flex'><BiSolidBookmarkAltPlus size={25} className="mr-2" />Add New Book</Link>
+          <Link to={'/editbook'} className='pt-[12px] px-3 font-bold flex'><BiEdit size={25} className="mr-3" />Edit Book</Link>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {/* Overlay */}
       {nav ? <div className='bg-black/80 fixed w-full h-screen z-10 top-0 left-0'></div> : ''}
-      
+
 
       {/* Side drawer menu */}
-      <div className={nav ? 'fixed top-0 left-0 w-[300px] h-screen bg-white z-10 duration-300' : 'fixed top-0 left-[-100%] w-[300px] h-screen bg-white z-10 duration-300' }>
+      <div className={nav ? 'fixed top-0 left-0 w-[300px] h-screen bg-white z-10 duration-300' : 'fixed top-0 left-[-100%] w-[300px] h-screen bg-white z-10 duration-300'}>
         <AiOutlineClose
-          onClick={()=> setNav(!nav)}
+          onClick={() => setNav(!nav)}
           size={30}
           className='absolute right-4 top-4 mt-2 cursor-pointer'
         />
@@ -70,28 +84,28 @@ const Navbar = () => {
           Gray <span className='font-bold'>Books</span>
         </h2>
         <nav>
-            <ul className='flex flex-col p-4 text-gray-800'>
-                
-                <li onClick={()=>onNavigateTo('wishlist')} className='text-xl py-4 flex'><AiFillHeart size={25} className='mr-4' />Wishlist</li>
-                
-                <li onClick={()=>onNavigateTo('addbook')} className='text-xl py-4 flex'><BiSolidBookmarkAltPlus size={25} className='mr-4' />Add new Book</li>
-                
-                <li onClick={()=>onNavigateTo('editbook')} className='text-xl py-4 flex'><BiEdit size={25} className='mr-4' />Edit Book</li>    
-                
-            </ul>
+          <ul className='flex flex-col p-4 text-gray-800'>
+
+            <li onClick={() => onNavigateTo('wishlist')} className='text-xl py-4 flex'><AiFillHeart size={25} className='mr-4' />Wishlist</li>
+
+            <li onClick={() => onNavigateTo('addbook')} className='text-xl py-4 flex'><BiSolidBookmarkAltPlus size={25} className='mr-4' />Add new Book</li>
+
+            <li onClick={() => onNavigateTo('editbook')} className='text-xl py-4 flex'><BiEdit size={25} className='mr-4' />Edit Book</li>
+
+          </ul>
         </nav>
       </div>
 
       {/* login/register button */}
-      {user.email ? (
+      {!userStatus ? (
+        <SwitchTabs data={["login", "register"]} onTabChange={onTabChange} />
+      ) : (
         <button
           onClick={handleLogout}
           className="bg-black text-white flex items-center py-1 rounded-full"
         >
           Log Out
         </button>
-      ) : (
-        <SwitchTabs data={["login", "register"]} onTabChange={onTabChange} />
       )}
     </div>
   );

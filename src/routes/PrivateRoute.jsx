@@ -1,22 +1,27 @@
 /* eslint-disable react/prop-types */
 import { Navigate, useLocation } from "react-router-dom"
-import { useSelector } from "react-redux"
-import Spinner from "../components/Spinner/Spinner"
 
-function PrivateRoute({children}) {
-    const { user, isLoading} = useSelector((state) => state.user)
+function PrivateRoute({ children }) {
+  const location = useLocation()
+  let userStatus
+  const userState = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('userState='));
 
-    const location = useLocation()
-
-    if(isLoading){
-        return <Spinner/>
+  if (userState) {
+    const status = userState.split('=')[1];
+    if (status === '') {
+      userStatus = false
+    } else {
+      userStatus = true
     }
+  }
 
-    if(!user.email && !isLoading){
-        return <Navigate to ='/login' state={{from : location}} replace />
-    }
-
-    return children
+  if (!userStatus) {
+    return <Navigate to='/login' state={{ from: location }} replace />
+  }
+  
+  return children
 }
 
 export default PrivateRoute
