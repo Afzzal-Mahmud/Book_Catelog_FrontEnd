@@ -1,66 +1,110 @@
-import { useForm } from "react-hook-form";
-import { createUser } from "../../Redux/userAuth/userAuthSlice";
-import { useDispatch, useSelector } from "react-redux";
-import Swal from "sweetalert2";
+import { useState } from "react";
+import Swal from "sweetalert2"
+import validation from "../../helper/validation";
+import { useRegisterUserMutation } from "../../Redux/api/apiSlice";
+import Spinner from "../Spinner/Spinner";
 import { useNavigate } from "react-router-dom";
 function Register() {
-  const {
-    handleSubmit,
-    formState: { errors },
-    register,
-  } = useForm();
-  const { error: firebaseError } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const submitAction = async (data) => {
-    try {
-      if (firebaseError) {
-        await Swal.fire({
-          icon: "error",
-          title: "Oops",
-          text: "This email already in use",
-          footer: "Use another email or log by clicking the login button",
-        });
-        return;
-      }
-      await dispatch(createUser({ email: data.mail, password: data.password }));
-      Swal.fire(
-        "Good job",
-        "Your account has been created successfully",
-        "success"
-      );
-      navigate("/");
-    } catch (error) {
-      console.log(error);
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: ""
+  })
+  const navigate = useNavigate()
+  const [errors, setErrors] = useState({})
+  const [registerUser, { isLoading, isSuccess, error, reset }] = useRegisterUserMutation()
+
+  if (isLoading) {
+    return <Spinner />
+  }
+  if (isSuccess) {
+    Swal.fire(
+      "Good job",
+      "User created successfully",
+      "success"
+    );
+    reset()
+    navigate('/login')
+  }
+
+  if (error) {
+    if (error.data.statusCode === 400) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops",
+        text: "Look for a null input",
+        footer: "Make sure you fill up the all input",
+      });
+      reset()
+    } else if (error.data.statusCode === 500) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops",
+        text: "Email is already in use",
+        footer: "Log in",
+      })
+      reset()
+      navigate('/login')
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops",
+        text: "An error occared while creating the user",
+        footer: "Check your network connection or try again later",
+      });
     }
-  };
+  }
+  const onRegister = async () => {
+    try {
+      /* removing the error if user has previous error store in errors state */
+      await setErrors({})
+      /* checking the new input again and setting the errors if requirment do not match again and storing them into a variable,unless storing the computer cpu works so fast that it do not have the time to re-render and check again. */
+      const userError = validation(user)
+      await setErrors(userError)
+
+      if (!Object.keys(userError).length) {
+        await registerUser(user)
+        await setUser({})
+      }
+
+    } catch (error) {
+      console.log(error)
+    } finally {
+      console.log('success')
+      // reset()
+    }
+  }
 
   return (
     <div className="w-full max-w-sm p-6 m-auto mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800">
       <div className="flex justify-center mx-auto"></div>
 
-      <form onSubmit={handleSubmit(submitAction)} className="mt-6">
+      <div className="mt-6">
         <div>
           <label className="block text-sm text-gray-800 dark:text-gray-200">
             Name
           </label>
           <input
-            {...register("name", { required: true })}
+            value={user.name ?? ""}
+            onChange={(e) => setUser({ ...user, name: e.target.value })}
             type="text"
             className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           />
+
+          {errors.name && <p className="text-red-700">{errors.name}</p>}
         </div>
         <div>
           <label className="block text-sm text-gray-800 dark:text-gray-200">
             Email
           </label>
           <input
-            {...register("mail", { required: "Email Address is required" })}
-            aria-invalid={errors.mail ? "true" : "false"}
-            type="text"
+            value={user.email ?? ""}
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
+            type="email"
             className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           />
-          {errors.mail && <p role="alert">{errors.mail?.message}</p>}
+          {errors.email && <p className="text-red-700">{errors.email}</p>}
+
         </div>
 
         <div className="mt-4">
@@ -68,41 +112,39 @@ function Register() {
             <label className="block text-sm text-gray-800 dark:text-gray-200">
               Password
             </label>
-            <a
-              href="#"
+            <p
               className="text-xs text-gray-600 dark:text-gray-400 hover:underline"
             >
               Forget Password?
-            </a>
+            </p>
           </div>
 
           <input
-            {...register("password", {
-              required: "Minimum 6 digit of password is required",
-              minLength: 6,
-            })}
+            value={user.password ?? ""}
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
             type="password"
             className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           />
-          {errors.password && <p role="alert">{errors.password?.message}</p>}
+          {errors.password && <p className="text-red-700">{errors.password}</p>}
         </div>
 
         <div className="mt-6">
-          <button className="w-full px-6 py-2.5 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-orange-800 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
+          <button
+            onClick={onRegister}
+            className="w-full px-6 py-2.5 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-orange-800 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
             Register Account
           </button>
         </div>
-      </form>
+      </div>
 
       <div className="flex items-center justify-between mt-4">
         <span className="w-1/5 border-b dark:border-gray-600 lg:w-1/5"></span>
 
-        <a
-          href="#"
+        <p
           className="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline"
         >
           or login with Social Media
-        </a>
+        </p>
 
         <span className="w-1/5 border-b dark:border-gray-400 lg:w-1/5"></span>
       </div>
