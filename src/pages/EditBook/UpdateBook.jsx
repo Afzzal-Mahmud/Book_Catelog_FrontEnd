@@ -35,13 +35,30 @@ function UpdateBook() {
         return <Spinner />
     }
     if (isError) {
-        Swal.fire({
-            icon: "error",
-            title: "Oops",
-            text: "An error occared while updating the book",
-            footer: "Try again later or check your network connection",
-        });
-        reset()
+        if (error.data.statusCode === 404) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops Unauthorized",
+                text: "You can only update the book you added only",
+                footer: "Try updating your book from edit book page",
+            });
+            reset()
+        } else if (error.data.statusCode === 403) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops Unauthenticated",
+                text: "Log out and login again",
+            });
+            reset()
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops",
+                text: "An error occared while updating the book",
+                footer: "Try again later or check your network connection",
+            });
+            reset()
+        }
     }
     if (isSuccess) {
         Swal.fire(
@@ -50,7 +67,7 @@ function UpdateBook() {
             "success"
         );
         reset()
-        navigate(`/updated-book-info/${id}`)
+        navigate(`/book-details/${id}`)
     }
     if (error) {
         console.log(error)
@@ -93,9 +110,9 @@ function UpdateBook() {
                             </div>
                         </div>
                         <div className="w-full lg:w-1/2 py-16 px-12">
-                            <h2 className="text-3xl mb-4">Register</h2>
+                            <h2 className="text-3xl mb-4">Update a Book</h2>
                             <p className="mb-4">
-                                Add a new Book to our list
+                                Update Your Existing Book
                             </p>
                             <div>
                                 <div className="mt-5">
@@ -125,7 +142,7 @@ function UpdateBook() {
                                     <select
                                         onChange={(e) => setUpdatedBookInfo({ ...updatedBookInfo, genre: e.target.value })}
                                         type="text" placeholder="Genra Name" className="border border-gray-400 py-1 px-2 w-full" >
-                                        <option value='Comedy'>Comedy</option>
+                                        <option selected value='Comedy'>Comedy</option>
                                         <option value='Romance'>Romance</option>
                                         <option value='Business'>Business</option>
                                         <option value='Horror'>Horror</option>
@@ -183,13 +200,13 @@ function UpdateBook() {
 
                                 <div className="mt-5">
                                     <span>
-                                        I accept the <a href="#" className="text-purple-500 font-semibold">Terms of Use</a> &  <a href="#" className="text-purple-500 font-semibold">Privacy Policy</a>
+                                        I accept the <p className="text-purple-500 font-semibold">Terms of Use</p> &  <p className="text-purple-500 font-semibold">Privacy Policy</p>
                                     </span>
                                 </div>
                                 <div className="mt-5">
                                     <button
                                         onClick={handleUpdateBook}
-                                        className="w-full bg-purple-500 py-3 text-center text-white">Add Book</button>
+                                        className="w-full bg-purple-500 py-3 text-center text-white">Update Book</button>
                                 </div>
                             </div>
                         </div>

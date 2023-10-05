@@ -1,7 +1,7 @@
 import Hero from "./pages/Hero/Hero";
 import WishList from "./pages/WishList/WishList";
 import Navbar from "./components/Navbar";
-import BookDetails from "./components/DetailsComponents/BookDetails";
+import BookDetails from "./components/Details/BookDetails";
 import LogIn from "./components/Form/LogIn";
 import Register from "./components/Form/Register";
 import NotFound from "./components/NotFound";
@@ -10,7 +10,6 @@ import AddNewBook from "./pages/AddBook/AddNewBook";
 import { EditBook } from "./pages/EditBook/EditBook";
 import UpdateBook from "./pages/EditBook/UpdateBook";
 import PrivateRoute from "./routes/PrivateRoute";
-import BookDetailsAfterUpdate from "./components/DetailsComponents/BookDetailsAfterUpdate";
 
 function App() {
   return (
@@ -33,11 +32,6 @@ function App() {
           <Route path="/update-book/:id" element={
             <PrivateRoute>
               <UpdateBook />
-            </PrivateRoute>
-          } />
-          <Route path="/updated-book-info/:id" element={
-            <PrivateRoute>
-              <BookDetailsAfterUpdate />
             </PrivateRoute>
           } />
           <Route path="/book-details/:bookId" element={<BookDetails />} />
