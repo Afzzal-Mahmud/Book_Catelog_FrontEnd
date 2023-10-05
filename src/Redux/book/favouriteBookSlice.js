@@ -15,6 +15,15 @@ export const favouriteBooksSlice = createSlice({
         state.favouriteBooks.push(action.payload);
       }
     },
+    setBookmarkedBook: (state, action) => {
+      const updatedBookBookmark = state.favouriteBooks.map((book) =>
+        book._id === action.payload ? { ...book, bookmark: !book.bookmark } : book
+      );
+      state.favouriteBooks = updatedBookBookmark
+    },
+    deleteFavouriteBook: (state, action) => {
+      state.favouriteBooks = state.favouriteBooks.filter(book => book._id !== action.payload)
+    },
 
     setWarning: (state, action) => {
       /* setWarning setting the state to WARNING_TRUE state from component under action*/
@@ -25,6 +34,6 @@ export const favouriteBooksSlice = createSlice({
     },
   },
 });
-export const { setFavouriteBooks, setWarning, clearWarning } =
+export const { setFavouriteBooks, setBookmarkedBook, deleteFavouriteBook, setWarning, clearWarning } =
   favouriteBooksSlice.actions;
 export default favouriteBooksSlice.reducer;

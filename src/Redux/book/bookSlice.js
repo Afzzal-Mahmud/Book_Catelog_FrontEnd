@@ -59,7 +59,7 @@ export function fetchBooks() {
   return async function fetchBooksThunk(dispatch) {
     dispatch(setStatus(STATUSES.LOADING));
     try {
-      const res = await fetch("https://book-catalouge.vercel.app/api/v1/books");
+      const res = await fetch("http://localhost:5000/api/v1/books");
       const data = await res.json();
       dispatch(setBooks(data.data));
       dispatch(setStatus(STATUSES.IDLE))
