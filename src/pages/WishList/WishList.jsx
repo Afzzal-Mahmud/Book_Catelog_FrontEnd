@@ -1,9 +1,12 @@
-// import { AiFillDelete } from "react-icons/ai";
+import { AiFillDelete } from "react-icons/ai";
+import { BsFillBookmarkDashFill, BsBookmarkCheckFill } from "react-icons/bs"
 import { MdFavorite } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { deleteFavouriteBook, setBookmarkedBook } from "../../Redux/book/favouriteBookSlice";
 
 function WishlistLink() {
+  const dispatch = useDispatch()
   const { favouriteBooks } = useSelector((state) => state.favouriteBooks);
   return (
     <section className="bg-white sm:bg-gray-100 md:bg-gray-100 mt-[10%]">
@@ -15,7 +18,7 @@ function WishlistLink() {
             </h1>
             <MdFavorite className="text-center" size={25} />
             <p className="text-xl mt-2 dark:text-gray-800">
-              click any of the above book heart button to add to favorites and
+              click any of the book heart button to add to favorites and
               click the image to see more details and make a review
             </p>
           </header>
@@ -56,15 +59,31 @@ function WishlistLink() {
                         </dl>
                       </div>
 
-                      {/* Due to react mount and unmount problem, Currently skipping the delete option */}
+                      <div className="flex flex-col">
+                        <button onClick={() => dispatch(deleteFavouriteBook(singleBook._id))} className="text-red-600 transition hover:text-red-800 mt-4 sm:mt-0">
+                          <p className="flex">
+                            <AiFillDelete size={25} />
+                            <span>Delete</span>
+                          </p>
+                        </button>
 
-                      {/* <button onClick={dispatch(deleteFavouriteBook(singleBook._id))} className="text-red-600 transition hover:text-red-800 mt-4 sm:mt-0">
-                        <AiFillDelete size={25} />
-                      </button> */}
+                        <button onClick={() => dispatch(setBookmarkedBook(singleBook._id))} className="text-black-600 transition hover:text-black-800 mt-4">
+                          {!singleBook.bookmark ?
+                            <p className="flex">
+                              <BsFillBookmarkDashFill size={25} /> <span>Reading</span>
+                            </p>
+                            :
+                            <p className="flex">
+                              <BsBookmarkCheckFill className="text-blue-600" size={25} /> <span>Complited</span>
+                            </p>
+                          }
+                        </button>
 
-                      <Link to={`/book-details/${singleBook._id}`}>
-                        <h2 style={{textDecoration:"underline"}} className="text-xl mt-3 sm:mt-1">Make Review</h2>
-                      </Link>
+                        <Link to={`/book-details/${singleBook._id}`}>
+                          <h2 style={{ textDecoration: "underline" }} className="text-xl mt-3 sm:mt-1">Make Review</h2>
+                        </Link>
+                      </div>
+
                     </li>
                   </ul>
                 </div>
